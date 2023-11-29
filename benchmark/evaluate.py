@@ -51,8 +51,6 @@ test_df['item_id_idx'] = le_item.transform(test_df['item_id'].values)
 
 n_users = train_df['user_id_idx'].nunique()
 n_items = train_df['item_id_idx'].nunique()
-print("Number of Unique Users : ", n_users)
-print("Number of unique Items : ", n_items)
 
 def data_loader(data, batch_size, n_usr, n_itm):
 

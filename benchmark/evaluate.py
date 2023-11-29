@@ -22,9 +22,9 @@ import scipy.sparse as sp
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-columns_name=['user_id','item_id','rating','timestamp']
-df = pd.read_csv("data/df.csv", sep="\t", names=columns_name)
-df = df[df['rating']>=3]
+columns_name=['user_id', 'item_id', 'rating', 'timestamp']
+df = pd.read_csv("movie-recommender-system/benchmark/data/df.csv", sep=",").iloc[:, 1:]
+df = df[df['rating'] >= 3]
 
 train, test = train_test_split(df.values, test_size=0.2, random_state=42)
 train_df = pd.DataFrame(train, columns=df.columns)
@@ -296,7 +296,7 @@ model = RecSysGNN(
     num_items=n_items,
 ).to(device)
 
-model.load_state_dict(torch.load('../models/model.h5'))
+model.load_state_dict(torch.load('movie-recommender-system/models/model.h5'))
 
 light_recall, light_precision, light_ndcg, light_map = test_and_eval(model, train_df, test_df)
 

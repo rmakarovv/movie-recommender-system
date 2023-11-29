@@ -20,6 +20,9 @@ from sklearn import preprocessing as pp
 from sklearn.model_selection import train_test_split
 import scipy.sparse as sp
 
+import warnings
+warnings.filterwarnings("ignore")
+
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 columns_name=['user_id', 'item_id', 'rating', 'timestamp']
@@ -300,4 +303,7 @@ model.load_state_dict(torch.load('movie-recommender-system/models/model.h5'))
 
 light_recall, light_precision, light_ndcg, light_map = test_and_eval(model, train_df, test_df)
 
-print(light_recall, light_precision, light_ndcg, light_map)
+print(f'Recall@{K}:     {light_recall:.2f}')
+print(f'Precision@{K}:  {light_precision:.2f}')
+print(f'NDCG@{K}:       {light_ndcg:.2f}')
+print(f'MAP@{K}:        {light_recall}')

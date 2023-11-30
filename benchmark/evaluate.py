@@ -31,10 +31,6 @@ def parse_args():
                         help="Path to the pre-trained model")
     parser.add_argument("--latent_dim", type=int, default=64, help="Dimension of latent embeddings")
     parser.add_argument("--num_layers", type=int, default=3, help="Number of graph convolution layers")
-    parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs")
-    parser.add_argument("--batch_size", type=int, default=1024, help="Batch size for training")
-    parser.add_argument("--decay", type=float, default=0.0001, help="Weight decay for regularization")
-    parser.add_argument("--lr", type=float, default=0.005, help="Learning rate for optimization")
     parser.add_argument("--K", type=int, default=20, help="Top K recommendations for evaluation")
 
     return parser.parse_args()

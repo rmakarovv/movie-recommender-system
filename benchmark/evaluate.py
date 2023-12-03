@@ -215,6 +215,29 @@ def convert_to_sparse_tensor(dok_mtrx):
     return dok_mtrx_sparse_tensor
 
 
+def get_hit_list(item_id_idx, top_rlvnt_itm):
+    """Function to get a hit list indicating whether each top-K item is interacted or not"""
+    return [1 if x in set(item_id_idx) else 0 for x in top_rlvnt_itm]
+    
+
+def get_dcg_idcg(item_id_idx, hit_list):
+    """Function to compute DCG and IDCG"""
+    idcg = sum([1 / np.log1p(idx + 1) for idx in range(min(len(item_id_idx), len(hit_list)))])
+    dcg = sum([hit / np.log1p(idx + 1) for idx, hit in enumerate(hit_list)])
+    return dcg / idcg
+
+
+def get_cumsum(hit_list):
+    """Function to compute cumulative sum of hit list"""
+    return np.cumsum(hit_list)
+
+
+def get_map(item_id_idx, hit_list, hit_list_cumsum):
+    """Function to compute MAP"""
+    return sum([hit_cumsum * hit / (idx + 1) for idx, (hit, hit_cumsum) in
+                enumerate(zip(hit_list, hit_list_cumsum))]) / len(item_id_idx)
+
+
 def get_metrics(user_Embed_wts, item_Embed_wts, n_users, n_items, train_data, test_data, K):
     """
     Compute recommendation metrics including recall, precision, nDCG, and MAP.
@@ -245,7 +268,7 @@ def get_metrics(user_Embed_wts, item_Embed_wts, n_users, n_items, train_data, te
     R = sp.dok_matrix((n_users, n_items), dtype=np.float32)
     R[train_data['user_id_idx'], train_data['item_id_idx']] = 1.0
 
-    # Convert sparse matrix R to a sparse PyTorch tensor
+    # Convert sparse matrix R to a PyTorch tensor
     R_tensor = convert_to_sparse_tensor(R)
     R_tensor_dense = R_tensor.to_dense()
 
@@ -284,26 +307,7 @@ def get_metrics(user_Embed_wts, item_Embed_wts, n_users, n_items, train_data, te
     metrics_df['recall'] = metrics_df.apply(lambda x: len(x['intrsctn_itm']) / len(x['item_id_idx']), axis=1)
     metrics_df['precision'] = metrics_df.apply(lambda x: len(x['intrsctn_itm']) / K, axis=1)
 
-    # Function to get a hit list indicating whether each top-K item is interacted or not
-    def get_hit_list(item_id_idx, top_rlvnt_itm):
-        return [1 if x in set(item_id_idx) else 0 for x in top_rlvnt_itm]
-
     metrics_df['hit_list'] = metrics_df.apply(lambda x: get_hit_list(x['item_id_idx'], x['top_rlvnt_itm']), axis=1)
-
-    # Function to compute DCG and IDCG
-    def get_dcg_idcg(item_id_idx, hit_list):
-        idcg = sum([1 / np.log1p(idx + 1) for idx in range(min(len(item_id_idx), len(hit_list)))])
-        dcg = sum([hit / np.log1p(idx + 1) for idx, hit in enumerate(hit_list)])
-        return dcg / idcg
-
-    # Function to compute cumulative sum of hit list
-    def get_cumsum(hit_list):
-        return np.cumsum(hit_list)
-
-    # Function to compute MAP
-    def get_map(item_id_idx, hit_list, hit_list_cumsum):
-        return sum([hit_cumsum * hit / (idx + 1) for idx, (hit, hit_cumsum) in
-                    enumerate(zip(hit_list, hit_list_cumsum))]) / len(item_id_idx)
 
     # Compute nDCG, hit list cumulative sum, and MAP
     metrics_df['ndcg'] = metrics_df.apply(lambda x: get_dcg_idcg(x['item_id_idx'], x['hit_list']), axis=1)

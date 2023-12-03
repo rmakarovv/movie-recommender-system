@@ -9,8 +9,8 @@ This repository is contains source code and reports for the assignment 2 on Prac
 Look at `reports/final_report.pdf` for detailed explanation of the solution.
 
 ## The best results obtained are:
-1. Normalized Discounted Cumulative Gain (NDCG) - 0.39 on test data.
-2. Mean Average Precision (MAP) - 0.18 on the test data.
+1. Normalized Discounted Cumulative Gain (NDCG) - 0.38 on test data.
+2. Mean Average Precision (MAP) - 0.17 on the test data.
 
 ## The project can be run in the following steps:
 

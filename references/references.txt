@@ -1,0 +1,6 @@
+I thank the authors of the following notebooks, from which parts of this solution were inspired or 
+adapted:
+
+https://colab.research.google.com/drive/1VQTBxJuty7aLMepjEYE-d7E9kjo51CA1?usp=sharing#scrollTo=6RNPSfjWjV25
+
+https://www.kaggle.com/code/dipanjandas96/lightgcn-pytorch-from-scratch/notebook
